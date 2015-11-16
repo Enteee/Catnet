@@ -15,14 +15,13 @@ while (<>) {
             my $img = $1;
             my $type = $2;
             my $caturl = "http://thecatapi.com/api/images/get?format=src&size=small&type=$type";
-            my $resp = $mech->simple_request( HTTP::Request->new(GET => "$caturl") );
-            if( $resp->is_redirect ) {
-                my $location = $resp->header( "Location" );
-                my $uri = new URI( $location );
-                print "OK rewrite-url=\"$uri\"\n";
-            }else{
-                print "OK\n";
-            }
+            my $resp;
+            do {
+                $resp = $mech->simple_request( HTTP::Request->new(GET => "$caturl") );
+            } while ( ! $resp->is_redirect );
+            my $location = $resp->header( "Location" );
+            my $uri = new URI( $location );
+            print "OK rewrite-url=\"$uri\"\n";
         }else{
             print "OK\n";
         }
