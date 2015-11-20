@@ -4,10 +4,11 @@ use WWW::Mechanize;
 $mech = WWW::Mechanize->new();
 $mech->stack_depth(0);
 
+$RAND_THRESHOLD=0.05;
 $|=1;
-$count = 0;
 $pid = $$;
 while (<>) {
+    if( rand() < $RAND_THRESHOLD) {
         chomp;
         my @X = split;
         my $url = $X[0];
@@ -22,8 +23,8 @@ while (<>) {
             my $location = $resp->header( "Location" );
             my $uri = new URI( $location );
             print "OK rewrite-url=\"$uri\"\n";
-        }else{
-            print "OK\n";
+            exit;
         }
-        $count++;
+    }
+    print "OK\n";
 }
